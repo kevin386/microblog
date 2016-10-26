@@ -40,9 +40,8 @@ def login():
     登录视图
     :return:
     """
-    print 'user login'
     if g.user is not None and g.user.is_authenticated:
-        print 'user', g.user.nickname, 'has been login'
+        app.logger.debug('user %s has been login', g.user)
         return redirect(url_for('index'))
 
     form = LoginForm()
@@ -50,8 +49,12 @@ def login():
         # flash('Login requested for OpendID="' + form.openid.data + '", remember_me=' + str(form.remember_me.data))
         # return redirect(url_for('index'))
         session['remember_me'] = form.remember_me.data
-        print 'try login', form.openid.data
+
+        app.logger.debug('try login by openid: %s', form.openid.data)
+
         return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
+
+    app.logger.debug('sign in')
 
     return render_template(
         'login.html',
@@ -67,14 +70,14 @@ def logout():
     登出
     :return:
     """
-    print 'user logout'
+    app.logger.debug(u'current user: %s, logout', g.user)
     logout_user()
     return redirect(url_for('index'))
 
 
 @lm.user_loader
 def load_user(user_id):
-    print 'load user', user_id
+    app.logger.debug(u'load user, user_id: %s', user_id)
     return User.query.get(int(user_id))
 
 
@@ -85,7 +88,9 @@ def before_request():
     :return:
     """
     g.user = current_user
-    print 'set user before request'
+
+    app.logger.debug(u'user %s, is_authenticated: %s', g.user, g.user.is_authenticated)
+
     if g.user.is_authenticated:
         g.user.last_seem = datetime.datetime.utcnow()
         db.session.add(g.user)
@@ -99,7 +104,7 @@ def after_login(resp):
     :param resp:
     :return:
     """
-    print 'after login callback', resp.email
+    app.logger.debug('after login callback, email: %s, nickname: %s', resp.email, resp.nickname)
 
     if resp.email is None or resp.email == "":
         flash('Invalid login, Please try again.')
@@ -108,10 +113,14 @@ def after_login(resp):
     user = User.query.filter_by(email=resp.email).first()
     if user is None:
         nickname = resp.nickname
-        print 'nickname', nickname
         if nickname is None or nickname == '':
             nickname = resp.email.split("@")[0]
+
+        nickname = User.make_unique_nickname(nickname)
         user = User(nickname=nickname, email=resp.email)
+
+        app.logger.debug('nickname: %s, email: %s', user.nickname, user.email)
+
         db.session.add(user)
         db.session.commit()
         print user.nickname, user.email
@@ -122,6 +131,8 @@ def after_login(resp):
         session.pop('remember_me', None)
 
     login_user(user, remember=remember_me)
+
+    app.logger.debug('user %s login', user.nickname)
 
     return redirect(request.args.get('next') or url_for('index'))
 
@@ -138,11 +149,11 @@ def user(nickname):
         flash('User %s not found!' % nickname)
         return redirect(url_for('index'))
 
+    posts = [post for post in user.posts.all()]
     posts = [
         {'author': user, 'body':'Test post #1'},
         {'author': user, 'body':'Test post #2'},
     ]
-    print user.nickname, user.about_me
     return render_template(
         'user.html',
         user=user,
@@ -156,12 +167,14 @@ def edit():
     编辑个人信息
     :return:
     """
-    form = EditForm()
+    form = EditForm(g.user.nickname)
 
     if form.validate_on_submit():
+        app.logger.debug('nickname: %s', form.nickname.data)
+        app.logger.debug('about_me: %s', form.about_me.data)
+
         g.user.nickname = form.nickname.data
         g.user.about_me = form.about_me.data
-        print g.user.nickname, g.user.about_me
         db.session.add(g.user)
         db.session.commit()
 
@@ -176,3 +189,13 @@ def edit():
         'edit.html',
         form=form,
     )
+
+
+@app.errorhandler(404)
+def handle_error_404(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def handle_error_500(error):
+    return render_template('500.html'), 500

@@ -39,7 +39,25 @@ class User(db.Model):
         :param size:
         :return:
         """
-        return 'http://s.gravatar.com/avatar/' + hashlib.md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
+        import config
+        return config.AVATAR_URL_FORMAT.format(email_hash=hashlib.md5(self.email).hexdigest(), size=size)
+
+    @staticmethod
+    def make_unique_nickname(nickname):
+        """
+        确保nickname是唯一的
+        :param nickname:
+        :return:
+        """
+        if User.query.filter_by(nickname=nickname).first() is None:
+            return nickname
+        version = 2
+        while True:
+            nickname = nickname + str(version)
+            if User.query.filter_by(nickname=nickname).first() is None:
+                break
+            version += 1
+        return nickname
 
 
 class Post(db.Model):
