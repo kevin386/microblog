@@ -28,3 +28,6 @@ ADMINS = ['you@example.com']
 
 # 头像URL格式
 AVATAR_URL_FORMAT = 'http://s.gravatar.com/avatar/{email_hash}?d=mm&s={size}'
+
+# 每页显示多少个blog
+POSTS_PER_PAGE = 3

@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form
+from flask.ext.wtf import FlaskForm as Form
 from wtforms import StringField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
@@ -30,3 +30,7 @@ class EditForm(Form):
             return False
 
         return True
+
+
+class PostForm(Form):
+    post = StringField('post', validators=[DataRequired()])

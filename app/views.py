@@ -4,32 +4,29 @@ from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from app import app, lm, oid, db
-from app.forms import LoginForm, EditForm
-from app.models import User
+from app.forms import LoginForm, EditForm, PostForm
+from app.models import User, Post
+from config import POSTS_PER_PAGE
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
-def index():
-    # return 'Hello, World!'
-    # user = {'nickname': 'Kevin'}
-    user = g.user
-    posts = [
-        {
-            'author': {'nickname': 'John'},
-            'body': 'Beautiful day in Portland!',
-        },
-        {
-            'author': {'nickname': 'Susan'},
-            'body': 'The Avengers movie was so cool!',
-        },
-    ]
+def index(page=1):
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=g.user, timestamp=datetime.datetime.utcnow())
+        db.session.add(post)
+        db.session.commit()
+        flash("Your post is now live!")
+        return redirect(url_for('index'))
+
+    posts = g.user.get_followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return render_template(
         'index.html',
         title='Home',
-        user=user,
-        posts=posts
+        posts=posts,
+        form=form,
     )
 
 
@@ -123,6 +120,10 @@ def after_login(resp):
 
         db.session.add(user)
         db.session.commit()
+
+        # 关注自己
+        db.session.add(user.follow(user))
+        db.session.commit()
         print user.nickname, user.email
 
     remember_me = False
@@ -137,8 +138,8 @@ def after_login(resp):
     return redirect(request.args.get('next') or url_for('index'))
 
 
-@app.route('/user/<nickname>')
-def user(nickname):
+@app.route('/user/<nickname>/<int:page>')
+def user(nickname, page=1):
     """
     用户信息视图
     :param nickname:
@@ -149,11 +150,8 @@ def user(nickname):
         flash('User %s not found!' % nickname)
         return redirect(url_for('index'))
 
-    posts = [post for post in user.posts.all()]
-    posts = [
-        {'author': user, 'body':'Test post #1'},
-        {'author': user, 'body':'Test post #2'},
-    ]
+    posts = user.posts.paginate(page, POSTS_PER_PAGE, False)
+
     return render_template(
         'user.html',
         user=user,
@@ -199,3 +197,51 @@ def handle_error_404(error):
 @app.errorhandler(500)
 def handle_error_500(error):
     return render_template('500.html'), 500
+
+
+@app.route('/follow/<nickname>')
+@login_required
+def follow(nickname):
+    user = User.query.filter_by(nickname=nickname).first()
+    if not user:
+        flash('User %s not found' % nickname)
+        return redirect(url_for('index'))
+
+    if user.id == g.user.id:
+        flash('Cannot follow your self')
+        return redirect(url_for('index'))
+
+    u = g.user.follow(user)
+    if not u:
+        flash('Cannot follow user %s' % nickname)
+        return redirect(url_for('index'))
+
+    db.session.add(u)
+    db.session.commit()
+
+    flash('You are now following user %s' % nickname)
+    return redirect(url_for('user', nickname=nickname))
+
+
+@app.route('/unfollow/<nickname>')
+@login_required
+def unfollow(nickname):
+    user = User.query.filter_by(nickname=nickname).first()
+    if not user:
+        flash('User %s not found.' % nickname)
+        return redirect(url_for('index'))
+
+    if user.id == g.user.id:
+        flash('Cannot unfollow your self.')
+        return redirect(url_for('index'))
+
+    u = g.user.unfollow(user)
+    if not u:
+        flash('Cannot unfollow %s.' % nickname)
+        return redirect(url_for('index'))
+
+    db.session.add(u)
+    db.session.commit()
+
+    flash('You have stop following user %s.' % nickname)
+    return redirect(url_for('user', nickname=nickname))
