@@ -138,6 +138,7 @@ def after_login(resp):
     return redirect(request.args.get('next') or url_for('index'))
 
 
+@app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>')
 def user(nickname, page=1):
     """
