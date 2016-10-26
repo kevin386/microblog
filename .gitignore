@@ -87,3 +87,12 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+.idea/
+tmp/
+db_respository/
+*.db
+*.sublime-project
+*.sublime-workspace
+*.pyc
+
