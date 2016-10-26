@@ -7,7 +7,12 @@
         <td><img src="{{ user.get_avatar(128) }}"></td>
         <td>
             <h1>{{ user.nickname }}</h1>
-            <h4>Email: {{ user.email }}</h4>
+{#            <p>Email: {{ user.email }}</p>#}
+            {% if user.about_me %}<p>About me: {{ user.about_me }}</p>{% endif %}
+            {% if user.last_seem %}<p><i>Last seem on: {{ user.last_seem }}</i></p>{% endif %}
+            {% if user.id == g.user.id %}
+                <p><a href="{{ url_for('edit') }}">Edit</a></p>
+            {% endif %}
         </td>
     </tr>
     </table>

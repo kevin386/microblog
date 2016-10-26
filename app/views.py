@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from app import app, lm, oid, db
-from app.forms import LoginForm
+from app.forms import LoginForm, EditForm
 from app.models import User
 
 
@@ -86,6 +86,10 @@ def before_request():
     """
     g.user = current_user
     print 'set user before request'
+    if g.user.is_authenticated:
+        g.user.last_seem = datetime.datetime.utcnow()
+        db.session.add(g.user)
+        db.session.commit()
 
 
 @oid.after_login
@@ -138,8 +142,37 @@ def user(nickname):
         {'author': user, 'body':'Test post #1'},
         {'author': user, 'body':'Test post #2'},
     ]
+    print user.nickname, user.about_me
     return render_template(
         'user.html',
         user=user,
         posts=posts,
+    )
+
+
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    """
+    编辑个人信息
+    :return:
+    """
+    form = EditForm()
+
+    if form.validate_on_submit():
+        g.user.nickname = form.nickname.data
+        g.user.about_me = form.about_me.data
+        print g.user.nickname, g.user.about_me
+        db.session.add(g.user)
+        db.session.commit()
+
+        flash('Your changes have been saved.')
+
+        return redirect(url_for('edit'))
+    else:
+        form.nickname.data = g.user.nickname
+        form.about_me.data = g.user.about_me
+
+    return render_template(
+        'edit.html',
+        form=form,
     )
