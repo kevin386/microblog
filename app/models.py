@@ -32,7 +32,12 @@ class User(db.Model):
             return str(self.id)
 
     def get_avatar(self, size):
-        return 'http://www.gravatar.com/avatar/' + hashlib.md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
+        """
+        获取用户头像,头像链接由gravatar提供
+        :param size:
+        :return:
+        """
+        return 'http://s.gravatar.com/avatar/' + hashlib.md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
 
 
 class Post(db.Model):

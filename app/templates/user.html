@@ -2,13 +2,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>User: {{ user.nickname }}</h1>
-    <h4>Email: {{ user.email }}</h4>
+    <table>
+    <tr valign="top">
+        <td><img src="{{ user.get_avatar(128) }}"></td>
+        <td>
+            <h1>{{ user.nickname }}</h1>
+            <h4>Email: {{ user.email }}</h4>
+        </td>
+    </tr>
+    </table>
     <hr>
     {% for post in posts %}
-        <p>
-            {{ post.author.nickname }} says: <b>{{ post.body }}</b>
-        </p>
+        {% include "post.html" %}
     {% endfor %}
 
 {% endblock %}
