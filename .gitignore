@@ -90,7 +90,7 @@ ENV/
 
 .idea/
 tmp/
-db_respository/
+db_repository/
 *.db
 *.sublime-project
 *.sublime-workspace
