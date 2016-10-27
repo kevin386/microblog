@@ -4,9 +4,9 @@ from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from app import app, lm, oid, db
-from app.forms import LoginForm, EditForm, PostForm
+from app.forms import LoginForm, EditForm, PostForm, SearchForm
 from app.models import User, Post
-from config import POSTS_PER_PAGE
+from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -92,6 +92,8 @@ def before_request():
         g.user.last_seem = datetime.datetime.utcnow()
         db.session.add(g.user)
         db.session.commit()
+        # 搜索表单是放在导航栏的,所有模板都要用,放全局里面就可以在模板里面使用这个表单了
+        g.search_form = SearchForm()
 
 
 @oid.after_login
@@ -246,3 +248,23 @@ def unfollow(nickname):
 
     flash('You have stop following user %s.' % nickname)
     return redirect(url_for('user', nickname=nickname))
+
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    if not g.search_form.validate_on_submit():
+        return redirect(url_for('index'))
+    # 重定向表单,避免重复提交
+    return redirect(url_for('search_results', query=g.search_form.search.data))
+
+
+@app.route('/search_results/<query>')
+@login_required
+def search_results(query):
+    results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS)
+    return render_template(
+        "search_results.html",
+        results=results,
+        query=query,
+    )

@@ -16,6 +16,7 @@ OPENID_PROVIDERS = [
 basedir = os.path.abspath(os.path.dirname(__file__))
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # mail server settings
 MAIL_SERVER = 'localhost'
@@ -31,3 +32,9 @@ AVATAR_URL_FORMAT = 'http://s.gravatar.com/avatar/{email_hash}?d=mm&s={size}'
 
 # 每页显示多少个blog
 POSTS_PER_PAGE = 3
+
+# 全文搜索
+WHOOSH_BASE = os.path.join(basedir, 'search.db')
+
+# 一次性搜索最大显示多少天记录
+MAX_SEARCH_RESULTS = 50

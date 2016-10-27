@@ -110,8 +110,19 @@ class User(db.Model):
         return Post.query.join(followers, (followers.c.followed_id == Post.user_id)).filter(
             followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
 
+from app import app
+import sys
+
+if sys.version_info >= (3, 0):
+    search_enable = False
+else:
+    search_enable = True
+    from flask.ext.whooshalchemy import whoosh_index
+
 
 class Post(db.Model):
+    __searchable__ = ['body']
+
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(40))
     timestamp = db.Column(db.DateTime)
@@ -119,3 +130,6 @@ class Post(db.Model):
 
     def __repr__(self):
         return "<Post %s>" % (self.body)
+
+if search_enable:
+    whoosh_index(app, Post)
