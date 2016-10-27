@@ -39,19 +39,20 @@ app.logger.setLevel(logging.DEBUG)
 # app.logger.info('Micro blog startup')
 app.logger.error('Micro blog startup')
 
-try:
-    # python test mail server
-    # python -m smtpd -n -c DebuggingServer localhost:25
-    credentials = None
-    if MAIL_USERNAME or MAIL_PASSWORD:
-        credentials = (MAIL_USERNAME, MAIL_PASSWORD)
-    mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), 'no-reply@' + MAIL_SERVER, ADMINS, 'Micro blog warring!',
-                               credentials)
-    mail_handler.setFormatter(logging.Formatter('\n'.join([LOG_CALLER_FORMAT, LOG_MESSAGE_FORMAT])))
-    mail_handler.setLevel(logging.ERROR)
-    app.logger.addHandler(mail_handler)
-except:
-    app.logger.error('Mail logger config failed!')
+# python test mail server
+# python -m smtpd -n -c DebuggingServer localhost:25
+credentials = None
+if MAIL_USERNAME or MAIL_PASSWORD:
+    credentials = (MAIL_USERNAME, MAIL_PASSWORD)
+mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), 'no-reply@' + MAIL_SERVER, ADMINS, 'Micro blog warring!',
+                           credentials)
+mail_handler.setFormatter(logging.Formatter('\n'.join([LOG_CALLER_FORMAT, LOG_MESSAGE_FORMAT])))
+mail_handler.setLevel(logging.ERROR)
+app.logger.addHandler(mail_handler)
+
+# mail app
+from flask.ext.mail import Mail
+mail = Mail(app)
 
 # 这个导入放在最后一行,否则会导入失败
 from app import views, models

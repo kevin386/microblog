@@ -4,6 +4,7 @@ from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from app import app, lm, oid, db
+from app.emails import follow_notification
 from app.forms import LoginForm, EditForm, PostForm, SearchForm
 from app.models import User, Post
 from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
@@ -223,6 +224,9 @@ def follow(nickname):
     db.session.commit()
 
     flash('You are now following user %s' % nickname)
+
+    follow_notification(user, g.user)
+
     return redirect(url_for('user', nickname=nickname))
 
 
