@@ -54,6 +54,10 @@ app.logger.addHandler(mail_handler)
 from flask.ext.mail import Mail
 mail = Mail(app)
 
+# 时间格式化类
+from app.momentjs import Mementjs
+app.jinja_env.globals['momentjs'] = Mementjs
+
 # 这个导入放在最后一行,否则会导入失败
 from app import views, models
 

@@ -90,7 +90,7 @@ def before_request():
     app.logger.debug(u'user %s, is_authenticated: %s', g.user, g.user.is_authenticated)
 
     if g.user.is_authenticated:
-        g.user.last_seem = datetime.datetime.utcnow()
+        g.user.last_seen = datetime.datetime.utcnow()
         db.session.add(g.user)
         db.session.commit()
         # 搜索表单是放在导航栏的,所有模板都要用,放全局里面就可以在模板里面使用这个表单了
