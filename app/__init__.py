@@ -11,9 +11,11 @@ from config import basedir
 from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
 
+# 登录管理
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'login'
+# 用于openid登录
 oid = OpenID(app, os.path.join(basedir, 'tmp'))
 
 # 添加邮件告警配置
@@ -44,6 +46,7 @@ app.logger.error('Micro blog startup')
 credentials = None
 if MAIL_USERNAME or MAIL_PASSWORD:
     credentials = (MAIL_USERNAME, MAIL_PASSWORD)
+    app.logger.debug(credentials)
 mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), 'no-reply@' + MAIL_SERVER, ADMINS, 'Micro blog warring!',
                            credentials)
 mail_handler.setFormatter(logging.Formatter('\n'.join([LOG_CALLER_FORMAT, LOG_MESSAGE_FORMAT])))
@@ -57,6 +60,15 @@ mail = Mail(app)
 # 时间格式化类
 from app.momentjs import Mementjs
 app.jinja_env.globals['momentjs'] = Mementjs
+
+# 国际化与本地化
+# bable中文目录必须使用 zh_Hans_CN ,其它都是不规范的,不能显示翻译
+from flask.ext.babel import Babel
+babel = Babel(app)
+
+# 惰性翻译
+from flask.ext.babel import lazy_gettext
+lm.login_message = lazy_gettext('Please log in to access this page.')
 
 # 这个导入放在最后一行,否则会导入失败
 from app import views, models

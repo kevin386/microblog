@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+
 from app import db
 import hashlib
 
@@ -55,6 +57,10 @@ class User(db.Model):
         """
         import config
         return config.AVATAR_URL_FORMAT.format(email_hash=hashlib.md5(self.email).hexdigest(), size=size)
+
+    @staticmethod
+    def make_valid_nickname(nickname):
+        return re.sub('[^a-zA-Z0-9_\.]', '', nickname)
 
     @staticmethod
     def make_unique_nickname(nickname):

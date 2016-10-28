@@ -40,3 +40,18 @@ WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 # 一次性搜索最大显示多少天记录
 MAX_SEARCH_RESULTS = 50
+
+# 支持的语言种类
+LANGUAGES = {
+    'en': 'English',
+    'zh_CN': 'Simplified-chinese',
+}
+# bable默认的本地语言
+BABEL_DEFAULT_LOCALE = 'zh_CN'
+
+# 日期国际化
+MOMENT_LANG_DICT = {
+    'zh_CN': 'zh-cn',
+}
+
+BLOG_NAME = "Micro blog"

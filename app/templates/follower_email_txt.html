@@ -1,0 +1,12 @@
+{{ _("Dear %(name)s", name=user.nickname) }},
+
+{{ _("%(name1)s is now a follower. Click on the following link to visit %(name2)s's profile page:",
+    name1=follower.nickname, name2=follower.nickname)
+}}
+
+{{url_for("user", nickname = follower.nickname, _external = True)}}
+
+{{ _("Regards") }},
+{% autoescape false %}
+{{ _("The %(blog_name)s admin", blog_name="[<code>%s</code>]" % g.blog_name) }}
+{% endautoescape %}

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from flask import g
+from flask.ext.babel import gettext
 from flask.ext.mail import Message
 from flask import render_template
 from app import mail, app
@@ -10,6 +12,7 @@ from app.decorators import async
 def async_send_mail(app, msg):
     with app.app_context():
         mail.send(msg)
+        app.logger.debug('mail <%s> sent', msg.subject)
 
 
 def send_mail(subject, sender, recipients, text_body, html_body):
@@ -22,6 +25,7 @@ def send_mail(subject, sender, recipients, text_body, html_body):
     :param html_body:
     :return:
     """
+    app.logger.debug('sender: %s, recipients: %s', sender, recipients)
     msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
@@ -36,9 +40,10 @@ def follow_notification(followed, follower):
     :return:
     """
     send_mail(
-        "[Micro blog] %s now is following you!" % follower.nickname,
+        gettext("%(blog_name)s %(user_name)s now is following you!",
+                blog_name="[%s]" % g.blog_name, user_name=follower.nickname),
         ADMINS[0],
         [followed.email],
-        render_template("follower_email.txt", user=followed, follower=follower),
+        render_template("follower_email_txt.html", user=followed, follower=follower),
         render_template("follower_email.html", user=followed, follower=follower),
     )
