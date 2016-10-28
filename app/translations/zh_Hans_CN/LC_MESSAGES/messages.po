@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-10-28 20:37+0800\n"
-"PO-Revision-Date: 2016-10-28 20:39+0800\n"
+"POT-Creation-Date: 2016-10-28 20:59+0800\n"
+"PO-Revision-Date: 2016-10-28 21:00+0800\n"
 "Last-Translator: \n"
 "Language: zh\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -110,6 +110,22 @@ msgstr "个人资料"
 #: app/templates/base.html:31
 msgid "Logout"
 msgstr "登出"
+
+#: app/templates/base.html:38
+msgid "Search"
+msgstr "搜索"
+
+#: app/templates/edit.html:5
+msgid "Edit Your Profile"
+msgstr "编辑个人资料"
+
+#: app/templates/edit.html:11
+msgid "Your nickname"
+msgstr "您的昵称"
+
+#: app/templates/edit.html:20
+msgid "About yourself"
+msgstr "关于自己"
 
 #: app/templates/edit.html:30
 msgid "Save Changes"
