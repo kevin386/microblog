@@ -12,6 +12,7 @@ from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS, LANGUAGES, MOMENT_LANG_DI
 
 
 @app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
 def index(page=1):
@@ -287,3 +288,28 @@ def get_locale():
     best_math_lang = request.accept_languages.best_match(LANGUAGES.keys())
     app.logger.debug('best_math_lang: %s', best_math_lang)
     return best_math_lang
+
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    """
+    删除说说
+    :param id:
+    :return:
+    """
+    post = Post.query.get(id)
+    if not post:
+        flash(gettext("Post not exist!"))
+        return redirect(url_for('index'))
+
+    if post.author.id != g.user.id:
+        flash(gettext("Cannot delete a blog that not belong to you!"))
+        return redirect(url_for('index'))
+
+    db.session.delete(post)
+    db.session.commit()
+
+    flash(gettext("Your post has been deleted."))
+
+    return redirect(url_for('index'))
+

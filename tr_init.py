@@ -7,7 +7,7 @@ import sys
 #     pybabel = 'flask/bin/pybabel'
 pybabel = "pybabel"
 if len(sys.argv) != 2:
-    print "usage: python tr_init.py <language-code>\nNote: Simplified-chinese language code must be \"zh_Hans_CN\""
+    print "Usage: python tr_init.py <language-code>\nNote: run 'pybabel --list-locales' to know all language-codes"
     sys.exit(1)
 os.system(pybabel + ' extract -F babel.cfg -k lazy_gettext -o messages.pot app')
 os.system(pybabel + ' init -i messages.pot -d app/translations -l ' + sys.argv[1])

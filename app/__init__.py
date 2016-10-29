@@ -18,11 +18,8 @@ lm.login_view = 'login'
 # 用于openid登录
 oid = OpenID(app, os.path.join(basedir, 'tmp'))
 
-# 添加邮件告警配置
-from config import MAIL_PASSWORD, MAIL_PORT, MAIL_SERVER, MAIL_USERNAME, ADMINS
+# log配置
 import logging
-from logging.handlers import SMTPHandler
-
 LOG_CALLER_FORMAT = '[%(levelname)s][%(asctime)s][%(process)d:%(thread)d][%(pathname)s:%(lineno)d %(funcName)s]:'
 LOG_MESSAGE_FORMAT = '%(message)s'
 
@@ -38,20 +35,28 @@ file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
 file_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.DEBUG)
-# app.logger.info('Micro blog startup')
-app.logger.error('Micro blog startup')
+app.logger.info('Micro blog startup')
 
 # python test mail server
 # python -m smtpd -n -c DebuggingServer localhost:25
-credentials = None
-if MAIL_USERNAME or MAIL_PASSWORD:
-    credentials = (MAIL_USERNAME, MAIL_PASSWORD)
-    app.logger.debug(credentials)
-mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), 'no-reply@' + MAIL_SERVER, ADMINS, 'Micro blog warring!',
-                           credentials)
-mail_handler.setFormatter(logging.Formatter('\n'.join([LOG_CALLER_FORMAT, LOG_MESSAGE_FORMAT])))
-mail_handler.setLevel(logging.ERROR)
-app.logger.addHandler(mail_handler)
+# from config import MAIL_PASSWORD, MAIL_PORT, MAIL_SERVER
+# from logging.handlers import SMTPHandler
+# credentials = None
+# if MAIL_USERNAME or MAIL_PASSWORD:
+#     credentials = (MAIL_USERNAME, MAIL_PASSWORD)
+#     app.logger.debug(credentials)
+# mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), 'no-reply@' + MAIL_SERVER, ADMINS,
+#                            '[%s] Attention!!!' % BLOG_NAME, credentials)
+
+# 添加邮件告警配置
+if not app.debug:
+    # 生产环境才配置邮件告警
+    from app.log_handler import MailLogHandler
+    from config import MAIL_USERNAME, ADMINS, BLOG_NAME
+    mail_handler = MailLogHandler('[{}] Attention!!!'.format(BLOG_NAME), MAIL_USERNAME, ADMINS)
+    mail_handler.setFormatter(logging.Formatter('\n'.join([LOG_CALLER_FORMAT, LOG_MESSAGE_FORMAT])))
+    mail_handler.setLevel(logging.ERROR)
+    app.logger.addHandler(mail_handler)
 
 # mail app
 from flask.ext.mail import Mail

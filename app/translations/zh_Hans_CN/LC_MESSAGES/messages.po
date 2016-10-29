@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-10-28 20:59+0800\n"
-"PO-Revision-Date: 2016-10-28 21:00+0800\n"
+"POT-Creation-Date: 2016-10-28 21:26+0800\n"
+"PO-Revision-Date: 2016-10-28 21:27+0800\n"
 "Last-Translator: \n"
 "Language: zh\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -38,50 +38,62 @@ msgstr "这个昵称有无效字符。请使用字母、数字、点和下划线
 msgid "This nickname is already in use. Please choose another one."
 msgstr "用户名已被占用！"
 
-#: app/views.py:23
+#: app/views.py:24
 msgid "Your post is now live!"
 msgstr "您的文章发布成功！"
 
-#: app/views.py:117
+#: app/views.py:118
 msgid "Invalid login, Please try again."
 msgstr "登录失败，请重试！"
 
-#: app/views.py:162 app/views.py:219 app/views.py:246
+#: app/views.py:163 app/views.py:220 app/views.py:247
 #, python-format
 msgid "User %(name)s not found."
 msgstr "未找到用户 %(name)s 。"
 
-#: app/views.py:191
+#: app/views.py:192
 msgid "Your changes have been saved."
 msgstr "变更已保存！"
 
-#: app/views.py:223
+#: app/views.py:224
 msgid "Cannot follow your self."
 msgstr "你不能关注自己。"
 
-#: app/views.py:228
+#: app/views.py:229
 #, python-format
 msgid "Cannot follow %(name)s."
 msgstr "不能关注%(name)s。"
 
-#: app/views.py:234
+#: app/views.py:235
 #, python-format
 msgid "You are now following %(name)s."
 msgstr "您已经成功关注%(name)s。"
 
-#: app/views.py:250
+#: app/views.py:251
 msgid "Cannot stop follow your self."
 msgstr "不能停止关注自己。"
 
-#: app/views.py:255
+#: app/views.py:256
 #, python-format
 msgid "Cannot stop follow %(name)s."
 msgstr "不能停止关注%(name)s。"
 
-#: app/views.py:261
+#: app/views.py:262
 #, python-format
 msgid "You have stop following %(name)s."
 msgstr "您已经成功取消对%(name)s的关注。"
+
+#: app/views.py:302
+msgid "Post not exist!"
+msgstr "说说不存在！"
+
+#: app/views.py:306
+msgid "Cannot delete a blog that not belong to you!"
+msgstr "无法删除别人的说说！"
+
+#: app/views.py:312
+msgid "Your post has been deleted."
+msgstr "删除成功。"
 
 #: app/templates/404.html:5
 msgid "File Not Found"
@@ -200,6 +212,10 @@ msgstr "登录"
 #, python-format
 msgid "%(nickname)s said on %(when)s:"
 msgstr "%(nickname)s 在 %(when)s 说:"
+
+#: app/templates/post.html:16
+msgid "Delete"
+msgstr "删除"
 
 #: app/templates/user.html:12
 msgid "Last seen on"

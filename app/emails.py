@@ -15,7 +15,7 @@ def async_send_mail(app, msg):
         app.logger.debug('mail <%s> sent', msg.subject)
 
 
-def send_mail(subject, sender, recipients, text_body, html_body):
+def send_mail(subject, sender, recipients, text_body=None, html_body=None):
     """
     发送邮件接口
     :param subject:
@@ -26,9 +26,11 @@ def send_mail(subject, sender, recipients, text_body, html_body):
     :return:
     """
     app.logger.debug('sender: %s, recipients: %s', sender, recipients)
-    msg = Message(subject, sender=sender, recipients=recipients)
-    msg.body = text_body
-    msg.html = html_body
+
+    if not (text_body or html_body):
+        raise Exception("Parameters 'text_body' or 'html_body' must not be None either")
+
+    msg = Message(subject, sender=sender, recipients=recipients, body=text_body, html=html_body)
     async_send_mail(app, msg)
 
 
