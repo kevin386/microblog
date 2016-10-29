@@ -55,3 +55,8 @@ MOMENT_LANG_DICT = {
 }
 
 BLOG_NAME = "Micro blog"
+
+# 记录慢查询
+SQLALCHEMY_RECORD_QUERIES = True
+# slow database query threshold (in seconds)
+DATABASE_QUERY_TIMEOUT = 0.5

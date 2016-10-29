@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-10-28 21:26+0800\n"
-"PO-Revision-Date: 2016-10-28 21:27+0800\n"
+"POT-Creation-Date: 2016-10-29 12:44+0800\n"
+"PO-Revision-Date: 2016-10-29 12:45+0800\n"
 "Last-Translator: \n"
 "Language: zh\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Generated-By: Babel 2.3.4\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: app/__init__.py:71
+#: app/__init__.py:76
 msgid "Please log in to access this page."
 msgstr "请先登录再访问这个页面。"
 
-#: app/emails.py:43
+#: app/emails.py:45
 #, python-format
 msgid "%(blog_name)s %(user_name)s now is following you!"
 msgstr "%(blog_name)s %(user_name)s关注了你！"
@@ -172,7 +172,7 @@ msgstr "%(name1)s已经成为了你的关注者，请点击下面链接查看%(n
 
 #: app/templates/index.html:11
 msgid "Say something:"
-msgstr "说点什么："
+msgstr "说点什么吧："
 
 #: app/templates/index.html:21
 msgid "Post!"
@@ -181,12 +181,12 @@ msgstr "发布"
 #: app/templates/index.html:31 app/templates/index.html:33
 #: app/templates/user.html:28 app/templates/user.html:30
 msgid "Newer posts"
-msgstr "上一条说说"
+msgstr "上一页"
 
 #: app/templates/index.html:36 app/templates/index.html:38
 #: app/templates/user.html:33 app/templates/user.html:35
 msgid "Older posts"
-msgstr "下一条说说"
+msgstr "下一页"
 
 #: app/templates/login.html:20
 msgid "Please Sign In"

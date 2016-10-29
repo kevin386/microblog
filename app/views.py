@@ -3,12 +3,13 @@ import datetime
 from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from flask.ext.babel import gettext
+from flask.ext.sqlalchemy import get_debug_queries
 
 from app import app, lm, oid, db, babel
 from app.emails import follow_notification
 from app.forms import LoginForm, EditForm, PostForm, SearchForm
 from app.models import User, Post
-from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS, LANGUAGES, MOMENT_LANG_DICT, BLOG_NAME
+from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS, LANGUAGES, MOMENT_LANG_DICT, BLOG_NAME, DATABASE_QUERY_TIMEOUT
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -69,14 +70,14 @@ def logout():
     登出
     :return:
     """
-    app.logger.debug(u'current user: %s, logout', g.user)
+    # app.logger.debug(u'current user: %s, logout', g.user)
     logout_user()
     return redirect(url_for('index'))
 
 
 @lm.user_loader
 def load_user(user_id):
-    app.logger.debug(u'load user, user_id: %s', user_id)
+    # app.logger.debug(u'load user, user_id: %s', user_id)
     return User.query.get(int(user_id))
 
 
@@ -88,7 +89,7 @@ def before_request():
     """
     g.user = current_user
 
-    app.logger.debug(u'user %s, is_authenticated: %s', g.user, g.user.is_authenticated)
+    # app.logger.debug(u'user %s, is_authenticated: %s', g.user, g.user.is_authenticated)
 
     if g.user.is_authenticated:
         g.user.last_seen = datetime.datetime.utcnow()
@@ -102,7 +103,16 @@ def before_request():
     g.moment_lang = MOMENT_LANG_DICT.get(g.locale)
     g.blog_name = BLOG_NAME
 
-    app.logger.debug('locale: %s, moment_lang: %s', g.locale, g.moment_lang)
+    # app.logger.debug('locale: %s, moment_lang: %s', g.locale, g.moment_lang)
+
+
+@app.after_request
+def after_request(response):
+    for query in get_debug_queries():
+        if query.duration > DATABASE_QUERY_TIMEOUT:
+            app.logger.warning("SLOW QUERY: %s\nParameters: %s\nDuration: %fs\nContext: %s\n" % (
+                query.statement, query.parameters, query.duration, query.context))
+    return response
 
 
 @oid.after_login
@@ -286,7 +296,7 @@ def search_results(query):
 @babel.localeselector
 def get_locale():
     best_math_lang = request.accept_languages.best_match(LANGUAGES.keys())
-    app.logger.debug('best_math_lang: %s', best_math_lang)
+    # app.logger.debug('best_math_lang: %s', best_math_lang)
     return best_math_lang
 
 
