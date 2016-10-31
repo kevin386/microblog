@@ -24,7 +24,7 @@ LOG_CALLER_FORMAT = '[%(levelname)s][%(asctime)s][%(process)d:%(thread)d][%(path
 LOG_MESSAGE_FORMAT = '%(message)s'
 
 from logging.handlers import RotatingFileHandler
-file_handler = RotatingFileHandler('tmp/main.log', 'a', 5*1024*1024, 5)
+file_handler = RotatingFileHandler('tmp/main.log', 'a', 100*1024*1024, 5)
 LOG_FORMAT = '\n'.join((
     '/' + '-' * 80,
     LOG_CALLER_FORMAT,
