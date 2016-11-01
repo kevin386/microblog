@@ -33,10 +33,6 @@ $ su - root
 $ groupadd users
 $ useradd user_00 -g users
 
-$ mkdir -p /data/code
-$ mkdir -p /data/release
-$ chown user_00:users -R /data
-
 # 安装nginx
 参考:
 http://www.cnblogs.com/kunhu/p/3633002.html
@@ -69,12 +65,24 @@ pip install gunicorn
 pip install supervisor
 
 # 生成sshkey
-$ sshkey-gen
+$ ssh-keygen
 $ cat ~/.ssh/id_rsa.pub
 拷贝到github
 
+# 拉取代码
+$ mkdir -p /data/code
+$ mkdir -p /data/release
+$ chown user_00:users -R /data
 $ cd /data/code
 $ git clone git@github.com:kevin386/microblog.git
+$ ln -s /data/code/microblog /data/release/microblog
+
+# 软链配置文件
+$ ln -s /etc/supervisord.conf /data/release/microblog/deploy/supervisord.conf
+$ ln -s /etc/sv.ini /data/release/microblog/deploy/sv.ini
+
+$ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+$ ln -s /data/release/microblog/deploy/nginx.conf /etc/nginx/nginx.conf
 
 # 编辑环境变量:
 export PS1="\[\e[36;1m\]\u\[\e[0m\]@pythonil#\[\e[33;1m\]\h\[\e[0m\]:\[\e[31;1m\]\w\[\e[0m\]\n\$ "
