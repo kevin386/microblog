@@ -27,7 +27,7 @@ $ ln -s /usr/local/bin/python2.7 /usr/bin/python
 
 最后把yum的默认python执行文件改回去
 $ vim /usr/bin/yum
-$ /usr/bin/python2.6.6
+!/usr/bin/python2.6.6
 
 重新安装setuptools，不能用yum安装了，yum安装的还是2.7的，因为yum只支持2.6
 参考: https://pypi.python.org/pypi/setuptools
