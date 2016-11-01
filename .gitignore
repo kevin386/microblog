@@ -94,5 +94,3 @@ db_repository/
 *.db
 *.sublime-project
 *.sublime-workspace
-*.pyc
-
