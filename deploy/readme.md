@@ -117,17 +117,20 @@ mysql> flush privileges;
 # 安装python-mysql
 $ easy_install MySQL-python
 
+# 配置gunicorn,supervisor等python第三方库
+$ cd /data/release/microblog/deploy
+$ pip wheel -r requirements.txt
+
+# 测试gunicorn
+$ cd /data/release/microblog
+$ mkdir tmp
+$ touch tmp/main.log
+$ /usr/local/bin/gunicorn -c deploy/gun_config.py run:app
+
 # 配置supervicor
-pip install supervisor
 $ ln -s /data/release/microblog/deploy/supervisord.conf /etc/supervisord.conf
 $ ln -s /data/release/microblog/deploy/sv.ini /etc/sv.ini
 
-# 配置gunicorn等python三方软件
-cd /data/release/microblog/deploy
-pip wheel -r requirements.txt
-
-# 测试gunicorn启动
-cd /data/release/microblog
-mkdir tmp
-touch tmp/main.log
+启动supervisord守护进程
+supervisord -c /etc/supervisord.conf
 
