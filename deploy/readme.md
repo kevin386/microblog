@@ -92,24 +92,39 @@ $ chkconfig --list | grep nginx
 启动nginx
 service nginx start/stop/status/restart
 
+# 安装mysql-server
+$ yum install mysql-devel
+$ yum install mysql-server
+$ mysql_install_db
+
+设置root密码
+$ /usr/bin/mysqladmin -u root password 'xxxxx'
+
+软链配置:
+$ mv /etc/my.conf /etc/my.conf.bak
+$ ln -s /data/release/microblog/deploy/my.conf /etc/my.conf
+
+启动server
+$ chkconfig --add mysqld
+$ service mysqld start
+
+新建读写用户和数据库
+mysql> create database blog;
+mysql> CREATE USER 'rwuser'@'localhost' IDENTIFIED BY 'xxxx';
+mysql> grant all privileges on blog.* to rwuser@localhost identified by 'xxxx';
+mysql> flush privileges;
+
+# 安装python-mysql
+$ easy_install MySQL-python
+
 # 配置supervicor
 pip install supervisor
 $ ln -s /data/release/microblog/deploy/supervisord.conf /etc/supervisord.conf
 $ ln -s /data/release/microblog/deploy/sv.ini /etc/sv.ini
 
 # 配置gunicorn等python三方软件
-pip install gunicorn
-pip install gevent
-pip install flask
-pip install flask-login
-pip install flask-openid
-pip install flask-mail
-pip install flask-sqlalchemy
-pip install sqlalchemy-migrate
-pip install flask-whooshalchemy
-pip install flask-wtf
-pip install flask-babel
-pip install coverage
+cd /data/release/microblog/deploy
+pip wheel -r requirements.txt
 
 # 测试gunicorn启动
 cd /data/release/microblog
