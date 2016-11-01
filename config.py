@@ -18,6 +18,9 @@ OPENID_PROVIDERS = [
     {'name': 'MyOpenID', 'url': 'https://www.myopenid.com'}
 ]
 
+MYSQL_USERNAME = os.environ.get('MYSQL_USERNAME')
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -25,11 +28,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 if DEBUG:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 else:
-    mysql_username = os.environ.get('MYSQL_USERNAME')
-    mysql_password = os.environ.get('MYSQL_PASSWORD')
-    SQLALCHEMY_DATABASE_URI = 'mysql://{username}:{password}@localhost/blog'.format(username=mysql_username,
-                                                                                    password=mysql_password)
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    SQLALCHEMY_DATABASE_URI = 'mysql://{username}:{password}@localhost/blog'.format(username=MYSQL_USERNAME,
+                                                                                    password=MYSQL_PASSWORD)
 
 # mail server settings
 MAIL_SERVER = 'smtp.qq.com'
