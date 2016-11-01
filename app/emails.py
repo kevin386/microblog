@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import g
-from flask.ext.babel import gettext
-from flask.ext.mail import Message
+from flask_babel import gettext
+from flask_mail import Message
 from flask import render_template
 from app import mail, app
 from config import ADMINS

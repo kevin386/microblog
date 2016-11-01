@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
 from config import basedir
-from flask.ext.login import LoginManager
-from flask.ext.openid import OpenID
+from flask_login import LoginManager
+from flask_openid import OpenID
 
 # 登录管理
 lm = LoginManager()
@@ -59,7 +59,7 @@ if not app.debug:
     app.logger.addHandler(mail_handler)
 
 # mail app
-from flask.ext.mail import Mail
+from flask_mail import Mail
 mail = Mail(app)
 
 # 时间格式化类
@@ -68,11 +68,11 @@ app.jinja_env.globals['momentjs'] = Mementjs
 
 # 国际化与本地化
 # bable中文目录必须使用 zh_Hans_CN ,其它都是不规范的,不能显示翻译
-from flask.ext.babel import Babel
+from flask_babel import Babel
 babel = Babel(app)
 
 # 惰性翻译
-from flask.ext.babel import lazy_gettext
+from flask_babel import lazy_gettext
 lm.login_message = lazy_gettext('Please log in to access this page.')
 
 # 这个导入放在最后一行,否则会导入失败

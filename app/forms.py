@@ -1,7 +1,7 @@
-from flask.ext.wtf import FlaskForm as Form
+from flask_wtf import FlaskForm as Form
 from wtforms import StringField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length
-from flask.ext.babel import gettext
+from flask_babel import gettext
 
 from app.models import User
 

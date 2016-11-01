@@ -97,7 +97,7 @@ pip install supervisor
 $ ln -s /data/release/microblog/deploy/supervisord.conf /etc/supervisord.conf
 $ ln -s /data/release/microblog/deploy/sv.ini /etc/sv.ini
 
-# 配置gunicorn
+# 配置gunicorn等python三方软件
 pip install gunicorn
 pip install gevent
 pip install flask
@@ -110,3 +110,9 @@ pip install flask-whooshalchemy
 pip install flask-wtf
 pip install flask-babel
 pip install coverage
+
+# 测试gunicorn启动
+cd /data/release/microblog
+mkdir tmp
+touch tmp/main.log
+

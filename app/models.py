@@ -123,7 +123,7 @@ if sys.version_info >= (3, 0):
     search_enable = False
 else:
     search_enable = True
-    from flask.ext.whooshalchemy import whoosh_index
+    from flask_whooshalchemy import whoosh_index
 
 
 class Post(db.Model):

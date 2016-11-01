@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
 from flask import render_template, flash, redirect, url_for, g, session, request
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from flask.ext.babel import gettext
-from flask.ext.sqlalchemy import get_debug_queries
+from flask_login import login_user, logout_user, current_user, login_required
+from flask_babel import gettext
+from flask_sqlalchemy import get_debug_queries
 
 from app import app, lm, oid, db, babel
 from app.emails import follow_notification
