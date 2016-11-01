@@ -101,8 +101,8 @@ $ mysql_install_db
 $ /usr/bin/mysqladmin -u root password 'xxxxx'
 
 软链配置:
-$ mv /etc/my.conf /etc/my.conf.bak
-$ ln -s /data/release/microblog/deploy/my.conf /etc/my.conf
+$ mv /etc/my.cnf /etc/my.cnf.bak
+$ ln -s /data/release/microblog/deploy/my.conf /etc/my.cnf
 
 启动server
 $ chkconfig --add mysqld
