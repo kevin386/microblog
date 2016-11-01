@@ -29,6 +29,7 @@ else:
     mysql_password = os.environ.get('MYSQL_PASSWORD')
     SQLALCHEMY_DATABASE_URI = 'mysql://{username}:{password}@localhost/blog'.format(username=mysql_username,
                                                                                     password=mysql_password)
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
 # mail server settings
 MAIL_SERVER = 'smtp.qq.com'
