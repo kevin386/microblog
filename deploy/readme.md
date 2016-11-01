@@ -1,4 +1,10 @@
-# 先升级python2.6到2.7
+# 配置系统环境变量:
+export PS1="\[\e[36;1m\]\u\[\e[0m\]@pythonil#\[\e[33;1m\]\h\[\e[0m\]:\[\e[31;1m\]\w\[\e[0m\]\n\$ "
+export MODE='CN'
+export MAIL_USERNAME='user@example.com'
+export MAIL_PASSWORD='password'
+
+# 升级系统python2.6到2.7
 http://www.cnblogs.com/ouxingning/archive/2012/10/24/install_python_on_centos.html
 
 $ yum install zlib-devel
@@ -33,41 +39,10 @@ $ su - root
 $ groupadd users
 $ useradd user_00 -g users
 
-# 安装nginx
-参考:
-http://www.cnblogs.com/kunhu/p/3633002.html
-http://nginx.org/download/
-
-具体步骤:
-$ yum install -y pcre-devel
-$ yum install -y zlib-devel
-
-$ cd /usr/local/src/
-$ wget http://nginx.org/download/nginx-1.8.0.tar.gz
-$ tar -zxvf nginx-1.8.0.tar.gz
-$ ./configure --prefix=/usr/local/nginx
-$ make && make install
-
-$ /usr/local/nginx/sbin/nginx -t
-
-放到service启动
-参考:
-https://www.nginx.com/resources/wiki/start/topics/examples/redhatnginxinit/
-
-$ vim /etc/init.d/nginx
-$ chmod 755 /etc/init.d/nginx
-$ chkconfig --add nginx
-
-# 配置gunicorn
-pip install gunicorn
-
-# 配置supervicor
-pip install supervisor
-
 # 生成sshkey
 $ ssh-keygen
 $ cat ~/.ssh/id_rsa.pub
-拷贝到github
+复制sshkey并配置到到github
 
 # 拉取代码
 $ mkdir -p /data/code
@@ -77,16 +52,61 @@ $ cd /data/code
 $ git clone git@github.com:kevin386/microblog.git
 $ ln -s /data/code/microblog /data/release/microblog
 
-# 软链配置文件
-$ ln -s /etc/supervisord.conf /data/release/microblog/deploy/supervisord.conf
-$ ln -s /etc/sv.ini /data/release/microblog/deploy/sv.ini
+# 安装nginx
+参考:
+http://www.cnblogs.com/kunhu/p/3633002.html
+http://nginx.org/download/
 
+yum install -y pcre-devel
+yum install -y zlib-devel
+yum install -y openssl openssl-devel
+
+$ cd /usr/local/src/
+$ wget http://nginx.org/download/nginx-1.8.0.tar.gz
+$ tar -zxvf nginx-1.8.0.tar.gz
+$ cd nginx-1.8.0
+
+./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-http_auth_request_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6 --with-http_spdy_module --with-cc-opt='-O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic'
+make && make install
+
+链接配置文件
 $ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
 $ ln -s /data/release/microblog/deploy/nginx.conf /etc/nginx/nginx.conf
 
-# 编辑环境变量:
-export PS1="\[\e[36;1m\]\u\[\e[0m\]@pythonil#\[\e[33;1m\]\h\[\e[0m\]:\[\e[31;1m\]\w\[\e[0m\]\n\$ "
-export MODE='CN'
-export MAIL_USERNAME='xx'
-export MAIL_PASSWORD='xxx'
+创建配置中的用户和目录
+useradd --system --home-dir=/var/cache/nginx --shell=/sbin/nologin nginx
+mkdir -p /var/cache/nginx/client_temp /var/cache/nginx/proxy_temp /var/cache/nginx/fastcgi_temp /var/cache/nginx/uwsgi_temp /var/cache/nginx/scgi_temp
 
+测试配置
+/usr/sbin/nginx -t
+
+加到service服务
+参考:
+https://www.nginx.com/resources/wiki/start/topics/examples/redhatnginxinit/
+
+$ vim /etc/init.d/nginx
+$ chmod 755 /etc/init.d/nginx
+$ chkconfig --add nginx
+$ chkconfig --list | grep nginx
+
+启动nginx
+service nginx start/stop/status/restart
+
+# 配置supervicor
+pip install supervisor
+$ ln -s /data/release/microblog/deploy/supervisord.conf /etc/supervisord.conf
+$ ln -s /data/release/microblog/deploy/sv.ini /etc/sv.ini
+
+# 配置gunicorn
+pip install gunicorn
+pip install gevent
+pip install flask
+pip install flask-login
+pip install flask-openid
+pip install flask-mail
+pip install flask-sqlalchemy
+pip install sqlalchemy-migrate
+pip install flask-whooshalchemy
+pip install flask-wtf
+pip install flask-babel
+pip install coverage
