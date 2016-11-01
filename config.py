@@ -4,7 +4,7 @@ import os
 MODE_DEV = 'DEV'
 MODE_CN = 'CN'
 MODE = os.environ.get('MODE') or MODE_DEV
-DEBUG = MODE != MODE_DEV
+DEBUG = MODE == MODE_DEV
 
 CSRF_ENABLED = True
 SECRET_KEY = "34c0df91-51f3-4bed-b097-60b8cc8d1963"
