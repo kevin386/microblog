@@ -1,4 +1,6 @@
 # 配置系统环境变量:
+$ vim /etc/profile
+加入以下内容:
 export PS1="\[\e[36;1m\]\u\[\e[0m\]@pythonil#\[\e[33;1m\]\h\[\e[0m\]:\[\e[31;1m\]\w\[\e[0m\]\n\$ "
 export MODE='CN'
 export MAIL_USERNAME='user@example.com'
@@ -113,6 +115,12 @@ mysql> create database blog;
 mysql> CREATE USER 'rwuser'@'localhost' IDENTIFIED BY 'xxxx';
 mysql> grant all privileges on blog.* to rwuser@localhost identified by 'xxxx';
 mysql> flush privileges;
+
+把用户名和密码加入到环境变量
+$ vim /etc/profile
+加入以下内容:
+export MYSQL_USERNAME='username'
+export MYSQL_PASSWORD='password'
 
 # 安装python-mysql
 $ easy_install MySQL-python
