@@ -99,7 +99,7 @@ $ yum install mysql-devel
 $ yum install mysql-server
 $ mysql_install_db
 
-设置root密码
+设置root密码(可以不需要设置root密码,root在linux root用户下可以直接登录)
 $ /usr/bin/mysqladmin -u root password 'xxxxx'
 
 软链配置:
@@ -112,7 +112,6 @@ $ service mysqld start
 
 新建读写用户和数据库
 mysql> create database blog;
-mysql> CREATE USER 'rwuser'@'localhost' IDENTIFIED BY 'xxxx';
 mysql> grant all privileges on blog.* to rwuser@localhost identified by 'xxxx';
 mysql> flush privileges;
 
