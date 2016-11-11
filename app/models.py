@@ -128,8 +128,6 @@ class User(db.Model):
         return Post.query.join(followers, (followers.c.followed_id == Post.user_id)).filter(
             followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
 
-admin.add_view(MicroBlogModelView(User, db.session))
-
 from app import app
 import sys
 
@@ -154,4 +152,6 @@ class Post(db.Model):
 if search_enable:
     whoosh_index(app, Post)
 
+
+admin.add_view(MicroBlogModelView(User, db.session))
 admin.add_view(MicroBlogModelView(Post, db.session))
