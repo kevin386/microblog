@@ -75,6 +75,9 @@ babel = Babel(app)
 from flask_babel import lazy_gettext
 lm.login_message = lazy_gettext('Please log in to access this page.')
 
+from flask_admin import Admin
+admin = Admin(app, name='microblog', template_mode='bootstrap3')
+
 # 这个导入放在最后一行,否则会导入失败
 from app import views, models
 

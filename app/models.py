@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
 import re
 
-from app import db
+from flask_admin.contrib.sqla import ModelView
+from flask_login import current_user
+from flask import redirect, url_for, request
+
+from app import db, admin
 import hashlib
+
+
+class MicroBlogModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login', next=request.url))
 
 
 followers = db.Table('followers',
@@ -116,6 +128,8 @@ class User(db.Model):
         return Post.query.join(followers, (followers.c.followed_id == Post.user_id)).filter(
             followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
 
+admin.add_view(MicroBlogModelView(User, db.session))
+
 from app import app
 import sys
 
@@ -139,3 +153,5 @@ class Post(db.Model):
 
 if search_enable:
     whoosh_index(app, Post)
+
+admin.add_view(MicroBlogModelView(Post, db.session))
