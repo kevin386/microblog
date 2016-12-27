@@ -6,14 +6,22 @@ export MODE='CN'
 export MAIL_USERNAME='user@example.com'
 export MAIL_PASSWORD='password'
 
-# 升级系统python2.6到2.7
-http://www.cnblogs.com/ouxingning/archive/2012/10/24/install_python_on_centos.html
-
+# 安装一些系统库和工具
+$ yum install git
+$ yum install vim*
 $ yum install zlib-devel
 $ yum install bzip2-devel
 $ yum install openssl-devel
 $ yum install ncurses-devel
 
+# 创建用户和用户组
+$ su - root
+$ groupadd users
+$ useradd user_00 -g users
+
+# 升级系统python2.6到2.7
+参考：http://www.cnblogs.com/ouxingning/archive/2012/10/24/install_python_on_centos.html
+具体步骤：
 $ cd /usr/local/src/
 $ wget https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz
 $ tar zxvf Python-2.7.8.tar.bz2
@@ -32,28 +40,6 @@ $ vim /usr/bin/yum
 重新安装setuptools，不能用yum安装了，yum安装的还是2.7的，因为yum只支持2.6
 参考: https://pypi.python.org/pypi/setuptools
 
-具体步骤:
-$ cd /usr/local/src/
-$ wget https://bootstrap.pypa.io/ez_setup.py -O - | python
-
-# 创建用户和用户组
-$ su - root
-$ groupadd users
-$ useradd user_00 -g users
-
-# 生成sshkey
-$ ssh-keygen
-$ cat ~/.ssh/id_rsa.pub
-复制sshkey并配置到到github
-
-# 拉取代码
-$ mkdir -p /data/code
-$ mkdir -p /data/release
-$ chown user_00:users -R /data
-$ cd /data/code
-$ git clone git@github.com:kevin386/microblog.git
-$ ln -s /data/code/microblog /data/release/microblog
-
 # 安装nginx
 参考:
 http://www.cnblogs.com/kunhu/p/3633002.html
@@ -70,6 +56,27 @@ $ cd nginx-1.8.0
 
 ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-http_auth_request_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6 --with-http_spdy_module --with-cc-opt='-O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic'
 make && make install
+
+# 安装python工具easy_install:
+$ cd /usr/local/src/
+$ wget https://bootstrap.pypa.io/ez_setup.py -O - | python
+$ easy_install pip
+
+# 创建代码目录
+$ mkdir -p /data/code
+$ mkdir -p /data/release
+$ chown user_00:users -R /data
+
+# login as user_00
+# 生成sshkey
+$ ssh-keygen
+$ cat ~/.ssh/id_rsa.pub
+复制sshkey并配置到到github
+
+# 拉取代码
+$ cd /data/code
+$ git clone git@github.com:kevin386/microblog.git
+$ ln -s /data/code/microblog /data/release/microblog
 
 链接配置文件
 $ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
